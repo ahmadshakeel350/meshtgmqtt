@@ -267,8 +267,6 @@ class MeshtasticConnection:
         :return:
         """
         setthreadtitle(self.name)
-        print("\n...FIFO...\n\n\n\n\n\n\n\n")
-        time.sleep(10)
 
         self.logger.debug("Opening FIFO...")
         create_fifo(FIFO)
@@ -311,6 +309,7 @@ class MeshtasticConnection:
 
         :return:
         """
+        print("Starting looooop..........................\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
         if self.config.enforce_type(bool, self.config.Meshtastic.FIFOEnabled):
             thread = Thread(target=self.run_loop, daemon=True, name=self.name)
             thread.start()
