@@ -136,8 +136,11 @@ def post2mesh(args):
     if args.message is None:
         print('Cannot send empty message...')
         return
+    print("Opening fifo...")
     create_fifo(FIFO)
+    print("Writing to fifo...")
     with open(FIFO, 'w', encoding='utf-8') as fifo:
+        print("Sending message...")
         fifo.write(args.message + '\n')
 
 def post_cmd(args):
