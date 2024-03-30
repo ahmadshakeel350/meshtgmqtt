@@ -269,7 +269,9 @@ class MeshtasticConnection:
         setthreadtitle(self.name)
 
         self.logger.debug("Opening FIFO...")
+        print("Opening FIFO...")
         create_fifo(FIFO)
+        print("Opened!")
         while not self.exit:
             print("here...")
             with open(FIFO, encoding='utf-8') as fifo:
