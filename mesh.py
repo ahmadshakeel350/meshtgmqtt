@@ -18,7 +18,7 @@ from mtg.bot.telegram import TelegramBot
 from mtg.config import Config
 from mtg.connection.aprs import APRSStreamer
 from mtg.connection.meshtastic import FIFO, FIFO_CMD
-from mtg.connection.mqtt import MQTT, MQTTHandler
+from mtg.connection.mqtt import MQTT, MQTTHandler, MQTTInterface
 from mtg.connection.rich import RichConnection
 from mtg.connection.telegram import TelegramConnection
 from mtg.database import sql_debug, MeshtasticDB
@@ -73,6 +73,7 @@ def main(args):
     mqtt_handler = MQTTHandler(config.MQTT.Topic, logger)
     mqtt_connection.set_handler(mqtt_handler.handler)
     mqtt_handler.set_node_callback(meshtastic_connection.on_mqtt_node)
+    mqtt_interface = MQTTInterface(debugOut=sys.stdout, cfg=config, logger=logger)
     #
     aprs_streamer = APRSStreamer(config)
     call_sign_filter = CallSignFilter(database, config, logger)
@@ -89,7 +90,7 @@ def main(args):
     telegram_bot.set_logger(logger)
     #
     open_ai = OpenAIBot()
-    meshtastic_bot = MeshtasticBot(database, config, meshtastic_connection, telegram_connection, open_ai)
+    meshtastic_bot = MeshtasticBot(database, config, meshtastic_connection, telegram_connection, open_ai,mqtt_interface)
     # set filter for MQTT
     mqtt_handler.set_filter(meshtastic_filter)
     meshtastic_bot.set_filter(meshtastic_filter)

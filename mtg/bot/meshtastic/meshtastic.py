@@ -12,7 +12,7 @@ from meshtastic import (
     BROADCAST_ADDR as MESHTASTIC_BROADCAST_ADDR,
     serial_interface as meshtastic_serial_interface,
     portnums_pb2 as meshtastic_portnums_pb2
-)
+) 
 
 from pubsub import pub
 
@@ -24,6 +24,7 @@ from mtg.filter import MeshtasticFilter
 from mtg.geo import get_lat_lon_distance
 from mtg.log import VERSION
 from mtg.output.file import CSVFileWriter
+from mtg.connection.mqtt import MQTT, MQTTHandler, MQTTInterface
 
 
 class MeshtasticBot:  # pylint:disable=too-many-instance-attributes
@@ -33,13 +34,14 @@ class MeshtasticBot:  # pylint:disable=too-many-instance-attributes
 
     # pylint:disable=too-many-arguments
     def __init__(self, database: MeshtasticDB, config: Config, meshtastic_connection: RichConnection,
-                 telegram_connection: TelegramConnection, bot_handler):
+                 telegram_connection: TelegramConnection, bot_handler, mqtt_interface: MQTTInterface):
         self.database = database
         self.config = config
         self.filter = None
         self.logger = None
         self.telegram_connection = telegram_connection
         self.meshtastic_connection = meshtastic_connection
+        self.mqtt_interface = mqtt_interface
         # track ping request/reply
         self.ping_container = {}
         # file logger
@@ -396,3 +398,5 @@ class MeshtasticBot:  # pylint:disable=too-many-instance-attributes
 
         self.telegram_connection.send_message(chat_id=self.config.enforce_type(int, self.config.Telegram.Room),
                                               text=f"{long_name}: {msg}")
+        
+        self.mqtt_interface.sendData(f"{long_name}: {msg}")
